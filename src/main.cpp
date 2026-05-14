@@ -128,9 +128,13 @@ int main() {
                     // if needed, or just append extension)
                     std::string safe_card_name = sanitize_filename(translation.card_name);
                     std::string image_path = image_dir + "/" + safe_card_name + ".png";
+                    
+                    // The path written to the .org file should be relative to the org file itself
+                    // Since captured_anki_cards.org and images/ share the same base directory:
+                    std::string relative_image_path = "./images/" + date_str + "/" + safe_card_name + ".png";
 
                     save_image(image_content, image_path);
-                    org_formatter.append_card(translation, image_path);
+                    org_formatter.append_card(translation, relative_image_path);
 
                     crow::json::wvalue res;
                     res["status"] = "success";

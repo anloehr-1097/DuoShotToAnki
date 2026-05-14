@@ -23,3 +23,15 @@ She was wearing a big hat.
 *** COMMENT
 [[/app/data/images/2026-05-14/Big_hat.png]]
 
+** Hat
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+hat
+*** Back
+шапка
+*** COMMENT
+[[/app/data/images/2026-05-14/Hat.png]]
+
