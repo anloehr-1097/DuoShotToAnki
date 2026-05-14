@@ -1,0 +1,5 @@
+* Ideas for future work
+
+
+** Buffering images if the API is not available, the quota is reached
+

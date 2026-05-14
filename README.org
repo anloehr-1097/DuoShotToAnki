@@ -1,0 +1,77 @@
+* Duolingo → Anki Pipeline: Backend Overview
+
+This project is a C++ backend service designed to digitize screenshots of Duolingo exercises and automatically convert them into Emacs Org-mode formatted Anki card snippets. 
+
+It receives image uploads via a REST API, processes them using Google's Gemini Flash AI model to extract the vocabulary, and safely writes the structured data to a local `.org` file while storing the original image references to allow for a review of the translation at a later point in time.
+
+** Features
+- **AI-Powered Extraction**: Uses the Gemini Flash API with *Structured Outputs* (`generationConfig`) to reliably extract the English concept, Russian translation, and a concise card name.
+- **Multithreaded Web Server**: Built with the Crow framework, capable of handling multiple concurrent image upload requests.
+- **Smart Deduplication**: Prevents duplicate Anki cards by scanning the `.org` file for existing English phrases before appending new entries, automatically discarding duplicate images.
+- **Automated Media Management**: Organizes uploaded screenshots into date-based subdirectories (`images/YYYY-MM-DD/`) and links them directly into the Org-mode cards.
+
+** Stack
+- **Language**: C++17
+- **Build System**: CMake (dependencies managed via `FetchContent`)
+- **HTTP Server**: Crow (C++)
+- **JSON Processing**: nlohmann/json
+- **HTTP Client**: libcurl
+- **Containerization**: Docker (multi-stage build on `debian:bookworm-slim`)
+
+** API Endpoint
+*** `POST /process`
+Expects a `multipart/form-data` payload containing the image file.
+For now, only supports /png/ files.
+
+** Setup and Build
+
+*** 1. Environment Variables
+The server requires two environment variables to run:
+- `GEMINI_API_KEY`: Your Google Gemini API key.
+- `AUTH_TOKEN`: A secret token of your choosing to protect the API. (not used at this point in time)
+
+*** 2. Building Locally
+#+begin_src bash
+mkdir build
+cd build
+cmake ..
+make
+#+end_src
+
+*** 3. Running the Server
+#+begin_src bash
+AUTH_TOKEN="your_secret" GEMINI_API_KEY="your_api_key" ./build/server
+#+end_src
+The server will run on `http://localhost:8080`.
+
+*** 4. Testing
+A helper script `test_request.sh` is provided in the project root to easily simulate a file upload using `curl`. Use it like so
+
+#+begin_src bash
+  ./test_request.sh my_image_file.png
+#+end_src
+
+** Output Format
+
+Cards are written to `captured_anki_cards.org` in append mode, grouped under a top-level heading for the current date.
+
+#+begin_src org
+* 2026-05-14 Thu
+ ** Card Name
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:LINK: [[./images/2026-05-14/Card_Name.png]]
+:END:
+ *** Front 
+English word / sentence / concept
+ *** Back 
+Russian Translation
+#+end_src
+
+** How to use
+1. Host the server on your local network
+2. Push images to the server
+3. Review the translations along with the cards
+4. open Anki application with the anki connect plugin
+5. Push the anki notes from emacs (see my emacs_conf.org file)

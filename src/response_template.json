@@ -1,0 +1,29 @@
+{
+    "responseFormat": {
+        "text": {
+            "mimeType": "APPLICATION_JSON",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "card_name": {
+                        "type": "string",
+                        "description": "A short, concise name for the Anki card."
+                    },
+                    "english": {
+                        "type": "string",
+                        "description": "The English word, sentence, or concept."
+                    },
+                    "russian": {
+                        "type": "string",
+                        "description": "The Russian translation."
+                    }
+                },
+                "required": [
+                    "card_name",
+                    "english",
+                    "russian"
+                ]
+            }
+        }
+    }
+}

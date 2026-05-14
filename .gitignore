@@ -1,0 +1,6 @@
+.env
+*~
+*.bu
+build
+*.png
+images
