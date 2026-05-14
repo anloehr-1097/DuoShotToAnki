@@ -1,0 +1,13 @@
+* 2026-05-14 Thu
+** Two letters sentence
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+This word has two letters
+*** Back
+В этом слове две буквы.
+*** COMMENT
+[[/app/data/images/2026-05-14/Two_letters_sentence.png]]
+

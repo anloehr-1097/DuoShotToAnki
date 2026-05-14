@@ -1,5 +1,7 @@
 * Ideas for future work
 
 
-** Buffering images if the API is not available, the quota is reached
+** Buffering images if the API is not available, the quota is 
+
+** Better error handling -> letting the user know when rate limit is exceeded instead of throwing generic 400 error.
 

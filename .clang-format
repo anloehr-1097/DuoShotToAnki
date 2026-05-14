@@ -1,0 +1,257 @@
+# .clang-format
+# Based on Google C++ Style Guide with practical adjustments for modern C++.
+# Verified against clang-format 17+.
+#
+# Key deviations from raw Google style:
+#   - ColumnLimit 100 instead of 80  (80 is too narrow for modern codebases)
+#   - IndentWidth 4 instead of 2     (more readable at wider column limit)
+#   - PointerAlignment Left          (int* p, not int *p — more idiomatic modern C++)
+#   - SortIncludes + IncludeCategories enforce a consistent include order
+#   - AllowShortFunctionsOnASingleLine None (always expand, easier to debug)
+
+Language: Cpp
+Standard: c++17
+
+# ─── Indentation ──────────────────────────────────────────────────────────────
+
+IndentWidth:                    4
+ContinuationIndentWidth:        4
+TabWidth:                       4
+UseTab:                         Never
+
+# Indent access modifiers (public/private/protected) one level inside class
+AccessModifierOffset:           -4
+
+# Indent 'case' labels inside 'switch'
+IndentCaseLabels:               true
+IndentCaseBlocks:               false
+
+# Indent contents of extern "C" blocks
+IndentExternBlock:              Indent
+
+# Indent requires clauses in templates
+IndentRequiresClause:           true
+
+# Namespace body is NOT indented (Google style — reduces rightward drift)
+NamespaceIndentation:           None
+
+# Lambda body indentation relative to the lambda signature
+LambdaBodyIndentation:          Signature
+
+# ─── Line Length ──────────────────────────────────────────────────────────────
+
+# 100 is a practical modern default; 80 is too cramped with long type names
+ColumnLimit:                    100
+
+# ─── Braces ───────────────────────────────────────────────────────────────────
+
+# Attach opening braces to their statement (Google/K&R style)
+BreakBeforeBraces:              Attach
+
+# Keep short blocks on one line only if they are truly trivial
+AllowShortBlocksOnASingleLine:  Empty
+
+# Never collapse if/else blocks onto one line — harder to step through in debugger
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine:        false
+AllowShortCaseLabelsOnASingleLine:   false
+
+# Inline functions: only allow empty bodies on one line
+AllowShortFunctionsOnASingleLine:    Empty
+
+# Allow short lambdas on one line when they appear inline in an expression
+AllowShortLambdasOnASingleLine:      Inline
+
+# ─── Alignment ────────────────────────────────────────────────────────────────
+
+# Align pointer/reference symbol with the type, not the variable name
+# Prefer: int* p   not: int *p   or: int * p
+PointerAlignment:               Left
+ReferenceAlignment:             Left
+
+# Align consecutive assignments only within a single block — avoids fragile
+# whitespace churn when one variable name changes
+AlignConsecutiveAssignments:    None
+AlignConsecutiveDeclarations:   None
+AlignConsecutiveMacros:         AcrossEmptyLines
+
+# Align escaped newlines in macros to the right
+AlignEscapedNewlines:           Right
+
+# Align operands of multi-line expressions
+AlignOperands:                  Align
+
+# Align trailing comments, but only within a short run
+AlignTrailingComments:          true
+
+# ─── Spacing ──────────────────────────────────────────────────────────────────
+
+SpaceAfterCStyleCast:           false
+SpaceAfterLogicalNot:           false
+SpaceAfterTemplateKeyword:      true
+SpaceAroundPointerQualifiers:   Default
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon:           false
+SpaceBeforeCpp11BracedList:     false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon:    true
+SpaceBeforeParens:              ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets:      false
+SpaceInEmptyBlock:              false
+SpaceInEmptyParentheses:        false
+SpacesBeforeTrailingComments:   2
+SpacesInAngles:                 Never
+SpacesInCStyleCastParentheses:  false
+SpacesInConditionalStatement:   false
+SpacesInContainerLiterals:      false
+SpacesInLineCommentPrefix:
+  Minimum:  1
+  Maximum:  1
+SpacesInParentheses:            false
+SpacesInSquareBrackets:         false
+
+# ─── Line Breaking ────────────────────────────────────────────────────────────
+
+# Break before binary operators (easier to scan which operator applies)
+BreakBeforeBinaryOperators:     NonAssignment
+
+# Break before concept keyword in template declarations
+BreakBeforeConceptDeclarations: Always
+
+# Break constructor initializers after the colon
+BreakConstructorInitializers:   BeforeComma
+
+# Break inheritance list before each base class
+BreakInheritanceList:           BeforeComma
+
+# Break long string literals — but only when necessary
+BreakStringLiterals:            true
+
+# Always break after the return type of function *definitions* when they are
+# too long; never force-break short definitions
+AlwaysBreakAfterReturnType:     None
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+
+# Allow packing function parameters tightly, but bin-pack args only if needed
+BinPackArguments:               false
+BinPackParameters:              false
+
+# When a function call doesn't fit on one line, put each argument on its own
+PackConstructorInitializers:    NextLine
+
+# ─── Empty Lines ──────────────────────────────────────────────────────────────
+
+# Maximum consecutive empty lines in function body
+MaxEmptyLinesToKeep:            1
+
+# Keep one blank line at the start/end of a block — matches Google style
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# ─── Includes ─────────────────────────────────────────────────────────────────
+
+# Sort includes within each group; regroup according to categories below
+SortIncludes:                   CaseSensitive
+IncludeBlocks:                  Regroup
+
+# Include order (matches Google and LLVM conventions):
+#   1. Matching header (foo.h for foo.cpp) — Priority 1
+#   2. C system headers                   — Priority 2
+#   3. C++ standard library               — Priority 3
+#   4. Third-party / external             — Priority 4
+#   5. Project headers                    — Priority 5
+IncludeCategories:
+  # C system headers: <unistd.h>, <sys/types.h>, etc.
+  - Regex:           '^<(sys|linux|netinet|arpa|bits|asm|uapi)/'
+    Priority:        2
+    SortPriority:    2
+    CaseSensitive:   false
+  - Regex:           '^<[a-z_]+\.h>'
+    Priority:        2
+    SortPriority:    2
+    CaseSensitive:   false
+  # C++ standard library headers (no extension)
+  - Regex:           '^<[a-z_]+>'
+    Priority:        3
+    SortPriority:    3
+    CaseSensitive:   false
+  # All other angle-bracket includes (third-party: boost, eigen, cuda, etc.)
+  - Regex:           '^<'
+    Priority:        4
+    SortPriority:    4
+    CaseSensitive:   false
+  # Project-local quoted includes
+  - Regex:           '^"'
+    Priority:        5
+    SortPriority:    5
+    CaseSensitive:   false
+
+# ─── Comments ─────────────────────────────────────────────────────────────────
+
+# Reflow long block comments to fit within ColumnLimit
+ReflowComments:                 true
+
+# ─── Penalties (line-break cost tuning) ──────────────────────────────────────
+# Higher value = clang-format tries harder to avoid that break.
+# These are tuned to prefer breaking function args over breaking template params.
+
+PenaltyBreakAssignment:             100
+PenaltyBreakBeforeFirstCallParameter: 30
+PenaltyBreakComment:                300
+PenaltyBreakFirstLessLess:          120
+PenaltyBreakOpenParenthesis:        0
+PenaltyBreakString:                 1000
+PenaltyBreakTemplateDeclaration:    10
+PenaltyExcessCharacter:             1000000
+PenaltyIndentedWhitespace:         0
+PenaltyReturnTypeOnItsOwnLine:      200
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+
+# Add trailing comma to function parameter lists that are already broken across
+# lines — makes diffs cleaner (adding a parameter only shows one line changed)
+InsertTrailingCommas:           None   # set to Wrapped to enable
+
+# Insert braces around single-statement if/for/while bodies
+# Very safe to enable; avoids the Apple SSL goto-fail class of bugs
+InsertBraces:                   true
+
+# Remove redundant semicolons after closing braces
+RemoveSemicolon:                true
+
+# Qualified type ordering: 'const' before type (const int, not int const)
+QualifierAlignment:             Left
+
+# Sort using declarations alphabetically
+SortUsingDeclarations:          LexicographicNumeric
+
+# Fix namespace closing comments: adds/corrects '// namespace foo'
+FixNamespaceComments:           true
+
+# Derive line ending from the file; fall back to LF
+DeriveLineEnding:               true
+UseCRLF:                        false
+
+# Macro definitions that should be treated as attributes (not re-indented)
+AttributeMacros:
+  - __capability
+  - __output
+  - __ununsed
+
+# Macros that should be treated as 'if' statements for indentation purposes
+IfMacros:
+  - IF
+  - ASSERT_IF
+
+# Macros whose arguments should be formatted like a foreach loop
+ForEachMacros:
+  - BOOST_FOREACH
+  - Q_FOREACH
+  - FOR_EACH
+
+# Statement macros (treated as full statements, not expressions)
+StatementMacros:
+  - Q_UNUSED
+  - QT_REQUIRE_VERSION
+  - DISALLOW_COPY_AND_ASSIGN

@@ -1,0 +1,66 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "dev",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "sanitize-asan",
+            "inherits": "dev",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined,leak -fno-omit-frame-pointer",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ENABLE_ASAN": "ON"
+            }
+        },
+        {
+            "name": "sanitize-tsan",
+            "inherits": "dev",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "inherits": "dev",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS": "-O3 -march=native"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "dev",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "sanitize-asan",
+            "configurePreset": "sanitize-asan"
+        },
+        {
+            "name": "sanitize-tsan",
+            "configurePreset": "sanitize-tsan"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "dev",
+            "configurePreset": "dev",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

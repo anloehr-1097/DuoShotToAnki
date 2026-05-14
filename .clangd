@@ -1,0 +1,7 @@
+CompileFlags:
+  Add: [-std=c++17]
+
+Diagnostics:
+  ClangTidy:
+    Add: [*]
+    Remove: [abseil-*, fuchsia-*, llvmlibc-*, google-*, modernize-use-trailing-return-type]
