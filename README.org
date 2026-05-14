@@ -75,3 +75,14 @@ Russian Translation
 3. Review the translations along with the cards
 4. open Anki application with the anki connect plugin
 5. Push the anki notes from emacs (see my emacs_conf.org file)
+
+
+** Deployment via docker compose
+
+make sure that the environment variables metioned in [[*3. Running the Server][3. Running the Server]] are set and run
+
+#+begin_src bash
+  docker compose up -d --build
+#+end_src
+
+This will expose the app on port 8080 and create a directory named /data/ at the project root which is mounted into the container and the destination of the org file as well as the image subirectory where outputs from the pipeline are stored.

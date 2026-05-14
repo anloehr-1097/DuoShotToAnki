@@ -4,3 +4,4 @@
 build
 *.png
 images
+compile_commands.json

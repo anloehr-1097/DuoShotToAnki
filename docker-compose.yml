@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  duoshot-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: duoshot-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_DIR=/app/data
+      # These will be read from a local .env file or host environment variables
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - AUTH_TOKEN=${AUTH_TOKEN}
+    restart: unless-stopped

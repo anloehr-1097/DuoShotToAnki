@@ -86,13 +86,19 @@ int main() {
               << std::endl;
   }
 
+  const char *data_dir_env = std::getenv("DATA_DIR");
+  const std::string data_dir = data_dir_env ? data_dir_env : ".";
+
+  std::string org_file_path = data_dir + "/captured_anki_cards.org";
+  std::string images_base_dir = data_dir + "/images";
+
   const GeminiClient gemini_client(gemini_api_key, GEMINI_URL);
-  const OrgFormatter org_formatter("captured_anki_cards.org", "./images");
+  const OrgFormatter org_formatter(org_file_path, images_base_dir);
 
   CROW_ROUTE(app, "/process")
       .methods(
           crow::HTTPMethod::POST)([&auth_token, &gemini_client,
-                                   &org_formatter](const crow::request &req) {
+                                   &org_formatter, images_base_dir](const crow::request &req) {
          auto auth_header = req.get_header_value("Authorization");
          if (auth_header.empty() || auth_header != "Bearer " + auth_token) {
            return crow::response(401, "Unauthorized");
@@ -112,7 +118,7 @@ int main() {
             return crow::response(400, "Bad Request: Gemini API data emtpy.");
           }
           std::string date_str = get_current_date();
-          std::string image_dir = "./images/" + date_str;
+          std::string image_dir = images_base_dir + "/" + date_str;
           std::filesystem::create_directories(image_dir);
 
           // Use card name for image (sanitize it a bit to avoid spaces/slashes
