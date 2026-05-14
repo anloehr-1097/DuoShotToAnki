@@ -11,3 +11,15 @@ This word has two letters
 *** COMMENT
 [[/app/data/images/2026-05-14/Two_letters_sentence.png]]
 
+** Big hat
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+She was wearing a big hat.
+*** Back
+На ней была большая шапка.
+*** COMMENT
+[[/app/data/images/2026-05-14/Big_hat.png]]
+
