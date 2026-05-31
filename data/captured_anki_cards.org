@@ -35,3 +35,496 @@ hat
 *** COMMENT
 [[/app/data/images/2026-05-14/Hat.png]]
 
+* 2026-05-15 Fri
+** Textbook
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+textbook
+*** Back
+учебник
+*** COMMENT
+[[./images/2026-05-15/Textbook.png]]
+
+** Busy again
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+He is busy again.
+*** Back
+Он снова занят.
+*** COMMENT
+[[./images/2026-05-15/Busy_again.png]]
+
+** Blue skirt too big
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+The blue skirt is too big for me.
+*** Back
+Синяя юбка мне велика
+*** COMMENT
+[[./images/2026-05-15/Blue_skirt_too_big.png]]
+
+** Ready for everything
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+I am ready for everything!
+*** Back
+Я готов ко всему!
+*** COMMENT
+[[./images/2026-05-15/Ready_for_everything.png]]
+
+* 2026-05-16 Sat
+** Fifth lesson
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+fifth lesson
+*** Back
+пятый урок
+*** COMMENT
+[[./images/2026-05-16/Fifth_lesson.png]]
+
+** spoon
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+spoon
+*** Back
+ложка
+*** COMMENT
+[[./images/2026-05-16/spoon.png]]
+
+** Classroom
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+classroom
+*** Back
+кабинет
+*** COMMENT
+[[./images/2026-05-16/Classroom.png]]
+
+** Graduated from
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+graduated from
+*** Back
+окончили
+*** COMMENT
+[[./images/2026-05-16/Graduated_from.png]]
+
+** Seventh
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+seventh
+*** Back
+седьмой
+*** COMMENT
+[[./images/2026-05-16/Seventh.png]]
+
+** Mosquitoes
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+mosquitoes
+*** Back
+комаров
+*** COMMENT
+[[./images/2026-05-16/Mosquitoes.png]]
+
+** Shark bite sentence
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+No, the shark did not bite me.
+*** Back
+Нет, акула меня не укусила.
+*** COMMENT
+[[./images/2026-05-16/Shark_bite_sentence.png]]
+
+** Dogs like sleeping
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+It is known that dogs like sleeping.
+*** Back
+Известно, что собаки любят спать.
+*** COMMENT
+[[./images/2026-05-16/Dogs_like_sleeping.png]]
+
+** Agreeing on interest
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+Do you agree that it was interesting?
+*** Back
+Вы согласны, что было интересно?
+*** COMMENT
+[[./images/2026-05-16/Agreeing_on_interest.png]]
+
+* 2026-05-19 Tue
+** subject
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+subject
+*** Back
+предмет
+*** COMMENT
+[[./images/2026-05-19/subject.png]]
+
+** More or less
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+I understand it more or less
+*** Back
+Я это более-менее понимаю.
+*** COMMENT
+[[./images/2026-05-19/More_or_less.png]]
+
+* 2026-05-20 Wed
+** Studying at law school
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+I'm studying at the law school
+*** Back
+Я учусь на юридическом факультете
+*** COMMENT
+[[./images/2026-05-20/Studying_at_law_school.png]]
+
+** Monday
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+Monday
+*** Back
+понедельник
+*** COMMENT
+[[./images/2026-05-20/Monday.png]]
+
+* 2026-05-21 Thu
+** Teacher at school
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+The teacher teaches at school.
+*** Back
+Учитель преподаёт в школе.
+*** COMMENT
+[[./images/2026-05-21/Teacher_at_school.png]]
+
+** Blackboard
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+blackboard
+*** Back
+доска
+*** COMMENT
+[[./images/2026-05-21/Blackboard.png]]
+
+** Preparing since Monday
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+I have been preparing for this since Monday.
+*** Back
+Я готовлюсь к этому с понедельника
+*** COMMENT
+[[./images/2026-05-21/Preparing_since_Monday.png]]
+
+* 2026-05-23 Sat
+** Preparing
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+preparing / getting ready
+*** Back
+готовлюсь
+*** COMMENT
+[[./images/2026-05-23/Preparing.png]]
+
+** Learning to count
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+The boy is learning to count.
+*** Back
+Мальчик учится считать.
+*** COMMENT
+[[./images/2026-05-23/Learning_to_count.png]]
+
+** Time for class
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+It's time to go to class
+*** Back
+Пора идти на занятия.
+*** COMMENT
+[[./images/2026-05-23/Time_for_class.png]]
+
+* 2026-05-24 Sun
+** Eighth
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+eighth
+*** Back
+восьмой
+*** COMMENT
+[[./images/2026-05-24/Eighth.png]]
+
+* 2026-05-25 Mon
+** сложные
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+difficult
+*** Back
+сложные
+*** COMMENT
+[[./images/2026-05-25/сложные.png]]
+
+** Clothing description
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+She has a good dress, and the shoes are also not bad.
+*** Back
+У неё хорошее платье и туфли тоже ничего
+*** COMMENT
+[[./images/2026-05-25/Clothing_description.png]]
+
+* 2026-05-26 Tue
+** short
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+short
+*** Back
+короткий
+*** COMMENT
+[[./images/2026-05-26/short.png]]
+
+* 2026-05-27 Wed
+** Missing class
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+Why didn't you come to class?
+*** Back
+Почему ты не пришла на занятия?
+*** COMMENT
+[[./images/2026-05-27/Missing_class.png]]
+
+** Learning to swim
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+She learned to swim at school.
+*** Back
+Она научилась плавать в школе
+*** COMMENT
+[[./images/2026-05-27/Learning_to_swim.png]]
+
+* 2026-05-28 Thu
+** Monday
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+on Monday
+*** Back
+в понедельник
+*** COMMENT
+[[./images/2026-05-28/Monday.png]]
+
+** Saturday
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+Saturday
+*** Back
+суббота
+*** COMMENT
+[[./images/2026-05-28/Saturday.png]]
+
+* 2026-05-29 Fri
+** Simple person
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+He is a simple person.
+*** Back
+Он простой человек
+*** COMMENT
+[[./images/2026-05-29/Simple_person.png]]
+
+** Languages taught here
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+Languages are taught here.
+*** Back
+Тут преподают языки.
+*** COMMENT
+[[./images/2026-05-29/Languages_taught_here.png]]
+
+* 2026-05-31 Sun
+** Area of a shape
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+How do I find the area of this shape?
+*** Back
+Как найти площадь этой фигуры?
+*** COMMENT
+[[./images/2026-05-31/Area_of_a_shape.png]]
+
+** Hometown
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+hometown
+*** Back
+родной город
+*** COMMENT
+[[./images/2026-05-31/Hometown.png]]
+
+** Native language question
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+What is your native language?
+*** Back
+Какой у тебя родной язык?
+*** COMMENT
+[[./images/2026-05-31/Native_language_question.png]]
+
+** Sound
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+sound
+*** Back
+звук
+*** COMMENT
+[[./images/2026-05-31/Sound.png]]
+
+** Above
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+above
+*** Back
+над
+*** COMMENT
+[[./images/2026-05-31/Above.png]]
+
+** Chair next to door
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+The chair is next to the door.
+*** Back
+Стул рядом с дверью
+*** COMMENT
+[[./images/2026-05-31/Chair_next_to_door.png]]
+
+** Go there even with you
+:PROPERTIES:
+:ANKI_DECK: Russian
+:ANKI_NOTE_TYPE: Basic (and reversed card)
+:END:
+*** Front
+I do not want to go there even with you.
+*** Back
+Я не хочу туда идти даже с тобой.
+*** COMMENT
+[[./images/2026-05-31/Go_there_even_with_you.png]]
+
