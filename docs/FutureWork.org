@@ -1,10 +1,5 @@
 * Ideas for future work
 
-
-** Buffering images if the API is not available, the quota is 
-
+** Buffering images if the API is not available, the quota is exceeded
 ** Better error handling -> letting the user know when rate limit is exceeded instead of throwing generic 400 error.
-
-
-
 ** Using another model delivering qualitative results if rate-limited as a fallback
