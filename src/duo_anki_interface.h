@@ -3,9 +3,10 @@
 #include <string>
 
 struct DuoAnkiResponse {
-  std::string card_name;
-  std::string english;
-  std::string russian;
+    std::string card_name;
+    std::string english;
+    std::string russian;
+    std::string translation_date;
 };
 
-#endif // DUO_ANKI_INTERFACE_H
+#endif  // DUO_ANKI_INTERFACE_H

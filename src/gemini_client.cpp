@@ -1,113 +1,151 @@
 #include "gemini_client.h"
-#include "config.h"
+
+#include <chrono>
+#include <csignal>
+#include <cstdlib>
+#include <iostream>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <utility>
+
 #include <curl/curl.h>
 #include <curl/easy.h>
-#include <iostream>
 #include <nlohmann/json.hpp>
-#include <stdexcept>
+
+#include "config.h"
+#include "duo_anki_interface.h"
+#include "org_formatter.h"
+#include "safe_queue.h"
 
 using json = nlohmann::json;
 
 // Callback to read the libcurl response
-size_t write_data(char *buffer, size_t size, size_t nmemb, void *userp) {
-  size_t total_size = size * nmemb;
-  std::string *response = static_cast<std::string *>(userp);
-  response->append(buffer, total_size);
-  return total_size;
+size_t write_data(char* buffer, size_t size, size_t nmemb, void* userp) {
+    size_t total_size = size * nmemb;
+    std::string* response = static_cast<std::string*>(userp);
+    response->append(buffer, total_size);
+    return total_size;
 }
 
-GeminiClient::GeminiClient(const std::string &api_key, const std::string &url,
+GeminiClient::GeminiClient(const std::string& api_key,
+                           const std::string& url,
                            const std::filesystem::path response_template_name)
     : api_key(api_key), url(url) {
+    // Check if response template file exists
+    if (!std::filesystem::exists(response_template_name)) {
+        std::cerr << "Warning: Response template file does not exist." << std::endl;
+        throw std::runtime_error("Response template file is required for structured output.");
+    }
 
-  // Check if response template file exists
-  if (!std::filesystem::exists(response_template_name)) {
-    std::cerr << "Warning: Response template file does not exist." << std::endl;
-    throw std::runtime_error(
-        "Response template file is required for structured output.");
-  }
-
-  template_file = std::fopen(response_template_name.string().c_str(), "r");
-  curl_global_init(CURL_GLOBAL_DEFAULT);
+    template_file = std::fopen(response_template_name.string().c_str(), "r");
+    curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 
 GeminiClient::~GeminiClient() {
-  curl_global_cleanup();
-  if (template_file) {
-    std::fclose(template_file);
-  }
+    curl_global_cleanup();
+    if (template_file) {
+        std::fclose(template_file);
+    }
 }
 
-DuoAnkiResponse GeminiClient::dispatch(const std::string &base64_image,
-                                       const std::string &mime_type) const {
-  CURL *handle = curl_easy_init();
-  if (!handle) {
-    throw std::runtime_error("Failed to initialize libcurl");
-  }
+void GeminiClient::start(SafeQueue<TranslateCommand>& cmd_queue,
+                         SafeQueue<std::pair<TranslateCommand, DuoAnkiResponse>>& res_queue) {
+    while (true) {
+        if (status.has_value()) {
+            switch (status.value()) {
+                case ClientStatus::rate_limit_exceeded:
+                    std::cout << "rate limit exceeded, sleeping for 60 seconds";
+                    std::this_thread::sleep_for(std::chrono::seconds(60));
 
-  std::string response_buffer;
+                case ClientStatus::available:
+                    if (auto tc = cmd_queue.pull()) {
+                        auto duo_anki_resp = dispatch((*tc).val.image_content);
+                        if (duo_anki_resp) {
+                            res_queue.push(
+                                std::make_pair(std::move((*tc).val), std::move(*duo_anki_resp)));
+                            res_queue.ack(tc->idx);
+                        }
+                        res_queue.nack(tc->idx);
+                    }
+            }
+        }
+    }
+}
 
-  // Construct URL
-  std::string fetch_url{this->url};
+std::optional<DuoAnkiResponse> GeminiClient::dispatch(const std::string& base64_image,
+                                                      const std::string& mime_type) const {
+    // TODO(al) wrap in smart pointer
+    // TODO(al) handle CURL respones to set status
+    CURL* handle = curl_easy_init();
+    if (!handle) {
+        throw std::runtime_error("Failed to initialize libcurl");
+    }
 
-  // Build the JSON payload
-  json payload;
-  payload["contents"][0]["parts"][0]["text"] = INSTRUCTIONS;
-  payload["contents"][0]["parts"][1]["inlineData"]["mimeType"] = mime_type;
-  payload["contents"][0]["parts"][1]["inlineData"]["data"] = base64_image;
+    std::string response_buffer;
 
-  // Structured Output Configuration
-  // Note: fseek is used to rewind the template file so multiple dispatches
-  // work.
-  std::rewind(template_file);
-  json schema_json;
-  try {
-    schema_json = json::parse(template_file);
-  } catch (const json::parse_error &e) {
-    std::cerr << "Error parsing schema file: " << e.what() << std::endl;
-  }
-  payload["generationConfig"] = schema_json;
-  std::string payload_str = payload.dump();
+    // Construct URL
+    std::string fetch_url{this->url};
 
-  // Set headers
-  struct curl_slist *headers = NULL;
-  headers = curl_slist_append(headers, "Content-Type: application/json");
-  headers = curl_slist_append(headers, ("x-goog-api-key: " + api_key).c_str());
+    // Build the JSON payload
+    json payload;
+    payload["contents"][0]["parts"][0]["text"] = INSTRUCTIONS;
+    payload["contents"][0]["parts"][1]["inlineData"]["mimeType"] = mime_type;
+    payload["contents"][0]["parts"][1]["inlineData"]["data"] = base64_image;
 
-  // Configure cURL
-  curl_easy_setopt(handle, CURLOPT_URL, fetch_url.c_str());
-  curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
-  curl_easy_setopt(handle, CURLOPT_POSTFIELDS, payload_str.c_str());
-  curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE, payload_str.length());
-  curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
-  curl_easy_setopt(handle, CURLOPT_WRITEDATA, &response_buffer);
+    // Structured Output Configuration
+    // Note: fseek is used to rewind the template file so multiple dispatches
+    // work.
+    std::rewind(template_file);
+    json schema_json;
+    try {
+        schema_json = json::parse(template_file);
+    } catch (const json::parse_error& e) {
+        std::cerr << "Error parsing schema file: " << e.what() << std::endl;
+    }
+    payload["generationConfig"] = schema_json;
+    std::string payload_str = payload.dump();
 
-  auto ccode = curl_easy_perform(handle);
+    // Set headers
+    struct curl_slist* headers = NULL;
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, ("x-goog-api-key: " + api_key).c_str());
 
-  // Cleanup
-  curl_slist_free_all(headers);
-  curl_easy_cleanup(handle);
+    // Configure cURL
+    curl_easy_setopt(handle, CURLOPT_URL, fetch_url.c_str());
+    curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(handle, CURLOPT_POSTFIELDS, payload_str.c_str());
+    curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE, payload_str.length());
+    curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
+    curl_easy_setopt(handle, CURLOPT_WRITEDATA, &response_buffer);
 
-  if (ccode != CURLE_OK) {
-    std::cerr << "cURL error: " << curl_easy_strerror(ccode) << std::endl;
-    return DuoAnkiResponse{};
-  }
+    auto ccode = curl_easy_perform(handle);
 
-  try {
-    json response_json = json::parse(response_buffer);
-    // The API returns the content in candidates[0].content.parts[0].text
-    std::string content_str =
-        response_json["candidates"][0]["content"]["parts"][0]["text"];
-    json content_json = json::parse(content_str);
+    // Cleanup
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(handle);
 
-    DuoAnkiResponse resp;
-    resp.card_name = content_json.value("card_name", "");
-    resp.english = content_json.value("english", "");
-    resp.russian = content_json.value("russian", "");
-    return resp;
-  } catch (const std::exception &e) {
-    std::cerr << "JSON Parsing error: " << e.what()
-              << "\nResponse buffer: " << response_buffer << std::endl;
-    return DuoAnkiResponse{};
-  }
+    if (ccode != CURLE_OK) {
+        std::cerr << "cURL error: " << curl_easy_strerror(ccode) << std::endl;
+        return std::nullopt;
+    }
+
+    try {
+        json response_json = json::parse(response_buffer);
+        // The API returns the content in candidates[0].content.parts[0].text
+        std::string content_str = response_json["candidates"][0]["content"]["parts"][0]["text"];
+        json content_json = json::parse(content_str);
+
+        DuoAnkiResponse resp;
+        resp.card_name = content_json.value("card_name", "");
+        resp.english = content_json.value("english", "");
+        resp.russian = content_json.value("russian", "");
+        resp.translation_date = get_current_date();
+        return resp;
+    } catch (const std::exception& e) {
+        std::cerr << "JSON Parsing error: " << e.what() << "\nResponse buffer: " << response_buffer
+                  << std::endl;
+        return std::nullopt;
+    }
 }

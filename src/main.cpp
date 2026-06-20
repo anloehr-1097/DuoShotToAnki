@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <curl/curl.h>
@@ -12,25 +13,19 @@
 
 #include "config.h"
 #include "crow.h"
+#include "crow/json.h"
 #include "crow/multipart.h"
 #include "duo_anki_interface.h"
 #include "gemini_client.h"
 #include "org_formatter.h"
+#include "safe_queue.h"
+#include "translate_cmd.h"
+#include "writer.h"
 
 constexpr char base64_chars[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
     "0123456789+/";
-
-std::string sanitize_filename(std::string name) {
-    for (char& c : name) {
-        if (c == ' ' || c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"'
-            || c == '<' || c == '>' || c == '|') {
-            c = '_';
-        }
-    }
-    return name;
-}
 
 // base64 encoding function (AI generated)
 std::string base64_encode(const std::string& in) {
@@ -63,16 +58,6 @@ crow::multipart::part find_image_part(const std::vector<crow::multipart::part>& 
     throw std::runtime_error("No image part found in multipart message.");
 }
 
-void save_image(const std::string& image_data, const std::string& filename) {
-    try {
-        std::ofstream out(filename, std::ios::binary);
-        out.write(image_data.c_str(), image_data.size());
-        out.close();
-    } catch (const std::exception& e) {
-        std::cerr << "Error saving image: " << e.what() << std::endl;
-    }
-}
-
 int main() {
     crow::SimpleApp app;
 
@@ -92,16 +77,26 @@ int main() {
     const char* data_dir_env = std::getenv("DATA_DIR");
     const std::string data_dir = data_dir_env ? data_dir_env : ".";
 
+    // TODO(al) these must be fpaths, check if the files / directories exist
     std::string org_file_path = data_dir + "/captured_anki_cards.org";
     std::string images_base_dir = data_dir + "/images";
 
-    const GeminiClient gemini_client(gemini_api_key, GEMINI_URL);
+    GeminiClient gemini_client(gemini_api_key, GEMINI_URL);
     const OrgFormatter org_formatter(org_file_path, images_base_dir);
+    SafeQueue<TranslateCommand> cmd_queue{};
+    SafeQueue<std::pair<TranslateCommand, DuoAnkiResponse>> res_queue{};
+
+    auto digitizer_thread = std::thread(
+        [&gemini_client, &cmd_queue, &res_queue]() { gemini_client.start(cmd_queue, res_queue); });
+
+    auto writer_thread = std::thread([&res_queue, &images_base_dir, &org_file_path]() {
+        auto writer = Writer{images_base_dir, org_file_path};
+        writer.start(res_queue);
+    });
 
     CROW_ROUTE(app, "/process")
         .methods(crow::HTTPMethod::POST)(
-            [&auth_token, &gemini_client, &org_formatter, images_base_dir](
-                const crow::request& req) {
+            [&auth_token, &gemini_client, &cmd_queue](const crow::request& req) {
                 auto auth_header = req.get_header_value("Authorization");
                 if (auth_header.empty() || auth_header != "Bearer " + auth_token) {
                     return crow::response(401, "Unauthorized");
@@ -115,32 +110,9 @@ int main() {
                     auto image_content = image_part.body;
                     // Base64 encode the raw binary image data
                     std::string base64_image = base64_encode(image_content);
-                    auto translation = gemini_client.dispatch(base64_image);
-                    if (translation.card_name.empty() || translation.english.empty()
-                        || translation.russian.empty()) {
-                        return crow::response(400, "Bad Request: Gemini API data emtpy.");
-                    }
-                    std::string date_str = get_current_date();
-                    std::string image_dir = images_base_dir + "/" + date_str;
-                    std::filesystem::create_directories(image_dir);
-
-                    // Use card name for image (sanitize it a bit to avoid spaces/slashes
-                    // if needed, or just append extension)
-                    std::string safe_card_name = sanitize_filename(translation.card_name);
-                    std::string image_path = image_dir + "/" + safe_card_name + ".png";
-                    
-                    // The path written to the .org file should be relative to the org file itself
-                    // Since captured_anki_cards.org and images/ share the same base directory:
-                    std::string relative_image_path = "./images/" + date_str + "/" + safe_card_name + ".png";
-
-                    save_image(image_content, image_path);
-                    org_formatter.append_card(translation, relative_image_path);
-
-                    crow::json::wvalue res;
-                    res["status"] = "success";
-                    res["message"] = "Card created successfully with name: " + translation.card_name
-                                     + ". English: " + translation.english
-                                     + ", Russian: " + translation.russian;
+                    cmd_queue.push(TranslateCommand{image_content});
+                    crow::json::wvalue res{};
+                    res["status"] = "sucess";
                     return crow::response(200, res);
                 } catch (const std::runtime_error& e) {
                     return crow::response(400, "Bad Request: " + std::string(e.what()));
