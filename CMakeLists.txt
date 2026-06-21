@@ -11,6 +11,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(BUILD_TESTING "Build tests" OFF)
+
 include(FetchContent)
 
 # Fetch ASIO (Dependency for Crow)
@@ -41,10 +43,24 @@ FetchContent_MakeAvailable(json)
 # Find cURL
 find_package(CURL REQUIRED)
 
-add_executable(server src/main.cpp src/gemini_client.cpp src/org_formatter.cpp)
+add_library(duolib STATIC
+    src/gemini_client.cpp
+    src/org_formatter.cpp
+    src/safe_queue.cpp
+    src/writer.cpp
+)
 
-target_link_libraries(server PRIVATE 
-    Crow::Crow 
-    nlohmann_json::nlohmann_json 
+target_include_directories(duolib PUBLIC src)
+target_link_libraries(duolib PUBLIC
+    Crow::Crow
+    nlohmann_json::nlohmann_json
     CURL::libcurl
 )
+
+add_executable(server src/main.cpp)
+target_link_libraries(server PRIVATE duolib)
+
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()

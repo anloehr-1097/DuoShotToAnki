@@ -29,4 +29,5 @@ public:
     std::optional<Lease> pull();
     void ack(uint64_t idx);
     void nack(uint64_t idx);
+    int size();
 };

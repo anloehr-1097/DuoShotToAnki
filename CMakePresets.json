@@ -34,6 +34,13 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_CXX_FLAGS": "-O3 -march=native"
             }
+        },
+        {
+            "name": "tests",
+            "inherits": "dev",
+            "cacheVariables": {
+                "BUILD_TESTING": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -52,12 +59,23 @@
         {
             "name": "release",
             "configurePreset": "release"
+        },
+        {
+            "name": "tests",
+            "configurePreset": "tests"
         }
     ],
     "testPresets": [
         {
             "name": "dev",
             "configurePreset": "dev",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "tests",
+            "configurePreset": "tests",
             "output": {
                 "outputOnFailure": true
             }
