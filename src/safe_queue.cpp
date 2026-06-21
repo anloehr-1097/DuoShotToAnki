@@ -1,5 +1,6 @@
 #include "safe_queue.h"
 
+#include <cstdint>
 #include <mutex>
 #include <utility>
 
@@ -22,4 +23,22 @@ std::optional<typename SafeQueue<T>::Lease> SafeQueue<T>::pull() {
     return std::nullopt;
 }
 
-// TODO(al) implement ack and nack
+template <typename T>
+void SafeQueue<T>::ack(uint64_t idx) {
+    if (auto elem = in_process.find(idx) != in_process.end()) {
+        in_process.erase(elem);
+    }
+    return;
+}
+
+/*
+ * Given idx which is key in unordered map, requeue the element associated to key.
+ */
+template <typename T>
+void SafeQueue<T>::nack(uint64_t idx) {
+    if (auto it_to_elem = in_process.find(idx) != in_process.end()) {
+        auto node = in_process.extract(it_to_elem);
+        push(std::move(node.mapped()));
+    }
+    return;
+}

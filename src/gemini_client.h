@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "duo_anki_interface.h"
+#include "nlohmann/json_fwd.hpp"
 #include "safe_queue.h"
 #include "translate_cmd.h"
 
@@ -21,7 +22,8 @@ private:
     const std::string api_key;
     const std::string url;
     FILE* template_file = nullptr;
-    std::optional<ClientStatus> status{std::nullopt};
+    mutable std::optional<ClientStatus> status{std::nullopt};
+    std::optional<DuoAnkiResponse> handleResponse(nlohmann::json& js) const;
 
 public:
     GeminiClient(const std::string& api_key,

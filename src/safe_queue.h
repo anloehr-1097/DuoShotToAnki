@@ -6,6 +6,12 @@
 #include <queue>
 #include <unordered_map>
 
+/*
+ * Due to the ack, nack functions, make sure that the objects of type T are not pointers.
+ * Else when extracting them from unordered_map, the user must make sure to free the memory
+ * associated with the pointer.
+ */
+
 template <typename T>
 class SafeQueue {
 private:

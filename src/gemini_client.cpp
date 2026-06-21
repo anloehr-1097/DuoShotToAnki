@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <csignal>
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <optional>
@@ -76,8 +77,7 @@ void GeminiClient::start(SafeQueue<TranslateCommand>& cmd_queue,
 
 std::optional<DuoAnkiResponse> GeminiClient::dispatch(const std::string& base64_image,
                                                       const std::string& mime_type) const {
-    // TODO(al) wrap in smart pointer
-    // TODO(al) handle CURL respones to set status
+    // TODO(al) make memory safe
     CURL* handle = curl_easy_init();
     if (!handle) {
         throw std::runtime_error("Failed to initialize libcurl");
@@ -133,19 +133,49 @@ std::optional<DuoAnkiResponse> GeminiClient::dispatch(const std::string& base64_
 
     try {
         json response_json = json::parse(response_buffer);
-        // The API returns the content in candidates[0].content.parts[0].text
-        std::string content_str = response_json["candidates"][0]["content"]["parts"][0]["text"];
-        json content_json = json::parse(content_str);
-
-        DuoAnkiResponse resp;
-        resp.card_name = content_json.value("card_name", "");
-        resp.english = content_json.value("english", "");
-        resp.russian = content_json.value("russian", "");
-        resp.translation_date = get_current_date();
+        auto resp = handleResponse(response_json);
         return resp;
+
+        // std::string content_str = response_json["candidates"][0]["content"]["parts"][0]["text"];
+        //         json content_json = json::parse(content_str);
+        //
+        //         DuoAnkiResponse resp;
+        //         resp.card_name = content_json.value("card_name", "");
+        //         resp.english = content_json.value("english", "");
+        //         resp.russian = content_json.value("russian", "");
+        //         resp.translation_date = get_current_date();
+        //         return resp;
     } catch (const std::exception& e) {
         std::cerr << "JSON Parsing error: " << e.what() << "\nResponse buffer: " << response_buffer
                   << std::endl;
+        return std::nullopt;
+    }
+}
+
+std::optional<DuoAnkiResponse> GeminiClient::handleResponse(nlohmann::json& js) const {
+    if (js.contains("error")) {
+        const auto& err = js["error"];
+        if (err["code"].is_number_integer()) {
+            std::int64_t error_code = err["code"].get<std::int64_t>();
+
+            switch (error_code) {
+                case 429:
+                    status = ClientStatus::rate_limit_exceeded;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return std::nullopt;
+    } else if (js.contains("candidates")) {
+        std::string content_str = js["candidates"][0]["content"]["parts"][0]["text"];
+        json content_json = json::parse(content_str);
+        DuoAnkiResponse resp{.card_name = content_json.value("card_name", ""),
+                             .english = content_json.value("english", ""),
+                             .russian = content_json.value("russian", ""),
+                             .translation_date = get_current_date()};
+        return resp;
+    } else {
         return std::nullopt;
     }
 }

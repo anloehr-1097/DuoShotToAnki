@@ -76,10 +76,21 @@ int main() {
 
     const char* data_dir_env = std::getenv("DATA_DIR");
     const std::string data_dir = data_dir_env ? data_dir_env : ".";
+    if (!std::filesystem::is_directory(data_dir)) {
+        // Note: data_dir implicitly casts to path via implicit constructor
+        std::cerr << "Error: " << data_dir << " is not a directory. Exiting";
+        exit(1);
+    }
 
-    // TODO(al) these must be fpaths, check if the files / directories exist
     std::string org_file_path = data_dir + "/captured_anki_cards.org";
     std::string images_base_dir = data_dir + "/images";
+    if (!std::filesystem::is_regular_file(org_file_path)) {
+        std::cerr << "Error: " << org_file_path << " is not a regular file. Exiting";
+        exit(1);
+    }
+    if (!std::filesystem::exists(images_base_dir)) {
+        std::cerr << "Info: Creating images_base_dir at " << images_base_dir;
+    }
 
     GeminiClient gemini_client(gemini_api_key, GEMINI_URL);
     const OrgFormatter org_formatter(org_file_path, images_base_dir);
